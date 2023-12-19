@@ -48,10 +48,7 @@ export class SwipeService {
       .leftJoin(
         this.swipeModel
           .query()
-          .select(
-            'target_user_id',
-            raw('json_group_array(user_id)').as('users'),
-          )
+          .select('target_user_id', raw('json_agg(user_id)').as('users'))
           .whereRaw("date(updated_at) = date('now')")
           .groupBy('target_user_id')
           .as('swt'),
