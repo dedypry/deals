@@ -31,6 +31,7 @@ export class SwipeService {
         'updated_at',
         raw('coalesce(sw.likes,0)').as('likes'),
         raw('coalesce(sw.pass,0)').as('pass'),
+        'swt.users',
       )
       .leftJoin(
         this.swipeModel
@@ -56,8 +57,8 @@ export class SwipeService {
         'users.id',
       )
       .leftJoin(
-        raw('json_each(swt.users)').as('json_each_users'),
-        'json_each_users.value',
+        raw('json_array_elements_text(swt.users) as json_each_users'),
+        raw('CAST(json_each_users.value AS bigint)'),
         'users.id',
       )
       .whereNull('json_each_users.value')
